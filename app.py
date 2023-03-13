@@ -77,18 +77,25 @@ def start_driver():
 
 
 def scan_site_1(item):
+    #casas bahia
     driver, wait = start_driver()
-    driver.get('https://www.americanas.com.br/busca/'+item)
-    names = driver.find_elements(By.XPATH, "//div[@class='product-info__Container-sc-1or28up-0 cdKgxb']/h3")
-    price = driver.find_elements(By.XPATH, '//div[@class="price-info__Wrapper-sc-1xm1xzb-0 clqFWq inStockCard__PriceInfoUI-sc-1ngt5zo-3 ciWwot"]/span[@class="src__Text-sc-154pg0p-0 price__PromotionalPrice-sc-h6xgft-1 ctBJlj price-info__ListPriceWithMargin-sc-1xm1xzb-2 liXDNM"]' )
-    site =  driver.current_url
-    links_images = driver.find_elements(By.XPATH, '//div[@class="src__Wrapper-sc-xr9q25-1 ebFfaU"]/picture[@class="src__Picture-sc-xr9q25-2 ghIIuE"]/img')
+    driver.get('https://www.casasbahia.com.br/'+item+'/b')
+    names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-2b5b888e-0 jEybNn"]/h3')))
+    prices = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-c0914aad-2 hdvMuk"]/span[@class="sc-c0914aad-9 hTVULn"]' )))
+    site =  driver.current_url                                                                  
+    link_image = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-b78556c4-5 jkQmcY"]/span/img'))) 
+    name = names[0].text
+    price = prices[0].text.split(' ')[2]
+    image = image[0].get_attribute('src')
     
 def scan_site_2():
+    #magazine luiza
     pass
 
 def scan_site_3():
+    
     pass
+
 
 
 
