@@ -11,18 +11,11 @@ from selenium.webdriver.support import expected_conditions as condicao_esperada
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-with open("password.txt", "r") as arquivo:
-    senha = arquivo.readline()
-    
-with open("host.txt", "r") as arquivo:
-    host = arquivo.readline()
-
-
 conexao = psycopg2.connect(
     database='railway',
     user='postgres',
-    password=senha,
-    host=host,
+    password= password,
+    host= 'containers-us-west-46.railway.app',
     port='7327'
 )
 
@@ -37,12 +30,15 @@ def new_product(sql, conexao, name, price, site, link_image, quote_date):
     dados = sql.fetchall()
     
     if len(dados) == 0:
-        query = 'INSERT INTO app_price_search_product(name, price, site, quote_date, link_image) VALUES( %s, %s, %s, %s, %s,)'
+        query = 'INSERT INTO app_price_search_product(name, price, site, quote_date, link_image) VALUES( %s, %s, %s, %s, %s)'
         values = (name, price, site, quote_date, link_image)
+        sql.execute(query, values)
+    else:
+        print('Dados já cadastrados')
         
 
 # new_product(sql, conexao, 'Xbox Series X', 4000.59, 'https://www.xbox.com/pt-BR/consoles/xbox-series-x', datetime.now(), 'https://i.ibb.co/Lt6WnJ8/console-microsoft-xbox-series-x-1tb-preto-rrt-00006-1601067024-g.jpg' )
-conexao.commit()    
+    conexao.commit()    
 
 
 def start_driver():
@@ -82,18 +78,21 @@ def scan_site_1(item):
     driver.get('https://www.casasbahia.com.br/'+item+'/b')
     names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-2b5b888e-0 jEybNn"]/h3')))
     prices = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-c0914aad-2 hdvMuk"]/span[@class="sc-c0914aad-9 hTVULn"]' )))
-    site =  driver.current_url                                                                  
+    site = driver.current_url                                                                  
     link_image = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-b78556c4-5 jkQmcY"]/span/img'))) 
     name = names[0].text
-    price = prices[0].text.split(' ')[2]
-    image = image[0].get_attribute('src')
+    price1 = prices[0].text.split(' ')[2].replace('.','')
+    price = price1.replace(',', '.')
+    image = link_image[0].get_attribute('src')
+    
+    new_product(sql, conexao, name, price, site, image, datetime.now())
     
 def scan_site_2():
     #magazine luiza
     pass
 
 def scan_site_3():
-    
+    #mercado livre
     pass
 
 
