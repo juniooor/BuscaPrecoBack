@@ -77,9 +77,9 @@ def start_driver():
 
 def scan_site_1(item):
     #casas bahia
-    prod = item.replace(' ', '-')
+    produto = item.replace(' ', '-')
     driver, wait = start_driver()
-    driver.get('https://www.casasbahia.com.br/'+prod+'/b')
+    driver.get('https://www.casasbahia.com.br/'+produto+'/b')
     names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-2b5b888e-0 jEybNn"]/h3')))
     prices = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-c0914aad-2 hdvMuk"]/span[@class="sc-c0914aad-9 hTVULn"]' )))
     site = driver.current_url                                                                  
@@ -93,25 +93,39 @@ def scan_site_1(item):
     
 def scan_site_2(item):
     #magazine luiza
-    prod = item.replace(' ', '+')
+    produto = item.replace(' ', '+')
     driver, wait = start_driver()
-    driver.get('https://www.magazineluiza.com.br/busca/'+item+'/')
-    names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-cBIjbw gMZEWY"]/h2')))
+    driver.get('https://www.magazineluiza.com.br/busca/'+produto+'/')
+    names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-cnOiCc kMzkrA"]/h2')))
     prices = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-hLBbgP blWoJz sc-gGfaQS dhvIhC"]/p[@class="sc-kDvujY jDmBNY sc-hGglLj bQqJoc"]' )))
     site = driver.current_url                                                                  
     link_image = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-eQVdPn clJokE"]/img'))) 
     
-    name = names[0].text
+    name = names[0].text.split("”")[0]
     price1 = prices[0].text.split(' ')[1].replace('.', '')
     price = price1.replace(',', '.')
-    # image = 
-def scan_site_3():
+    image = link_image[0].get_attribute('src')
+    
+    new_product(sql, conexao, name, price, site, image, datetime.now())
+    
+def scan_site_3(item):
     #mercado livre
-    pass
+    produto = item.replace(' ', '-')
+    driver, wait = start_driver()
+    driver.get('https://lista.mercadolivre.com.br/'+ produto)
+    names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="ui-search-item__group ui-search-item__group--title shops__items-group"]/a[@class="ui-search-item__group__element shops__items-group-details ui-search-link"]/h2')))
+    prices= wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="ui-search-price__second-line shops__price-second-line"]/span[@class="price-tag ui-search-price__part shops__price-part"]/span[@class="price-tag-text-sr-only"]')))
+    site = driver.current_url
+    link_image = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="slick-slide slick-active"]/img')))
+    name = names[0].text.split('-')[0]
+    price = prices[0].text.split(' ')[0]
+    image = link_image[0].get_attribute('src')
+    
+    new_product(sql, conexao, name, price, site, image, datetime.now())
 
 
 
 
 
 
-scan_site_2('iphone 13 pro max')
+scan_site_3('iphone 14 pro max')
