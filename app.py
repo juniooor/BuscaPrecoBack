@@ -63,7 +63,7 @@ def start_driver():
         ChromeDriverManager().install()), options=chrome_options)
     wait = WebDriverWait(
         driver,
-        10,
+        20,
         poll_frequency=1,
         ignored_exceptions=[
             NoSuchElementException,
@@ -77,8 +77,9 @@ def start_driver():
 
 def scan_site_1(item):
     #casas bahia
+    prod = item.replace(' ', '-')
     driver, wait = start_driver()
-    driver.get('https://www.casasbahia.com.br/'+item+'/b')
+    driver.get('https://www.casasbahia.com.br/'+prod+'/b')
     names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-2b5b888e-0 jEybNn"]/h3')))
     prices = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-c0914aad-2 hdvMuk"]/span[@class="sc-c0914aad-9 hTVULn"]' )))
     site = driver.current_url                                                                  
@@ -90,10 +91,20 @@ def scan_site_1(item):
     
     new_product(sql, conexao, name, price, site, image, datetime.now())
     
-def scan_site_2():
+def scan_site_2(item):
     #magazine luiza
-    pass
-
+    prod = item.replace(' ', '+')
+    driver, wait = start_driver()
+    driver.get('https://www.magazineluiza.com.br/busca/'+item+'/')
+    names = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-cBIjbw gMZEWY"]/h2')))
+    prices = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-hLBbgP blWoJz sc-gGfaQS dhvIhC"]/p[@class="sc-kDvujY jDmBNY sc-hGglLj bQqJoc"]' )))
+    site = driver.current_url                                                                  
+    link_image = wait.until(condicao_esperada.visibility_of_all_elements_located((By.XPATH, '//div[@class="sc-eQVdPn clJokE"]/img'))) 
+    
+    name = names[0].text
+    price1 = prices[0].text.split(' ')[1].replace('.', '')
+    price = price1.replace(',', '.')
+    # image = 
 def scan_site_3():
     #mercado livre
     pass
@@ -101,6 +112,6 @@ def scan_site_3():
 
 
 
-item = 'iphone 14 pro max'
-prod = item.replace(' ', '-')
-scan_site_1(prod)
+
+
+scan_site_2('iphone 13 pro max')
