@@ -11,11 +11,14 @@ from selenium.webdriver.support import expected_conditions as condicao_esperada
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
+with open('password.txt', 'r') as arquivo:
+    password = arquivo.read()
+
 conexao = psycopg2.connect(
     database='railway',
     user='postgres',
-    password= password,
-    host= 'containers-us-west-46.railway.app',
+    password=password,
+    host='containers-us-west-46.railway.app',
     port='7327'
 )
 
